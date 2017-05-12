@@ -1,10 +1,4 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="VSPackage.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
@@ -68,6 +62,9 @@ namespace TSLint
 
             // Init linter.
             TsLint.Init(solutionDir);
+
+            // Error list helper.
+            ErrorListHelper.Init(this);
 
             base.Initialize();
         }

@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ErrorListHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TsLint.cs" />
     <Compile Include="TsLintResult.cs" />

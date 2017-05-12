@@ -39,14 +39,39 @@ namespace TSLint
             {
                 this.document.FileActionOccurred += this.OnDocumentFileActionOccured;
                 this.CollectTags(this.document.FilePath);
+                this.UpdateErrorsList();
             }
         }
+
+        public IEnumerable<ITagSpan<IErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+        {
+            if (this.collectedTags.Count > 0)
+            {
+                foreach (var span in spans)
+                {
+                    foreach (var tag in this.collectedTags)
+                    {
+                        var snapshot = span.Snapshot;
+                        var trackingSpanSpan = tag.TrackingSpan.GetSpan(snapshot);
+
+                        if (trackingSpanSpan.IntersectsWith(span))
+                        {
+                            var tagSpan = new TagSpan<IErrorTag>(new SnapshotSpan(snapshot, trackingSpanSpan), tag);
+                            yield return tagSpan;
+                        }
+                    }
+                }
+            }
+        }
+
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         private void OnDocumentFileActionOccured(object sender, TextDocumentFileActionEventArgs e)
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
                 this.CollectTags(e.FilePath);
+                this.UpdateErrorsList();
 
                 this.TagsChanged(
                     this,
@@ -106,33 +131,24 @@ namespace TSLint
                     new TsLintTag(
                         trackingSpan,
                         PredefinedErrorTypeNames.Warning,
-                        $"[tslint] {entry.Failure} ({entry.RuleName})"
+                        $"[tslint] {entry.Failure} ({entry.RuleName})",
+                        tsFilename,
+                        entry.StartPosition.Line
                     )
                 );
             }
         }
 
-        public IEnumerable<ITagSpan<IErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+        private void UpdateErrorsList()
         {
-            if (this.collectedTags.Count > 0)
-            {
-                foreach (var span in spans)
-                {
-                    foreach (var tag in this.collectedTags)
-                    {
-                        var snapshot = span.Snapshot;
-                        var trackingSpanSpan = tag.TrackingSpan.GetSpan(snapshot);
+            ErrorListHelper.Suspend();
+            ErrorListHelper.RemoveAllForDocument(this.document.FilePath);
+            ErrorListHelper.Resume();
 
-                        if (trackingSpanSpan.IntersectsWith(span))
-                        {
-                            var tagSpan = new TagSpan<IErrorTag>(new SnapshotSpan(snapshot, trackingSpanSpan), tag);
-                            yield return tagSpan;
-                        }
-                    }
-                }
+            foreach (var tag in this.collectedTags)
+            {
+                ErrorListHelper.Add(tag);
             }
         }
-
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
     }
 }
