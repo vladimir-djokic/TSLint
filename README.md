@@ -20,6 +20,6 @@ This extension is not perfect and more work is required. Some of the work that s
 
 - [ ] Make it work with local and global installations
 - [ ] Make is support both warnings and erros along with different markings in the editor
-- [ ] Make it support `Error List` in Visual Studio
+- [x] Make it support `Error List` in Visual Studio (basic support)
 - [ ] Make it support automated fixes
 - [ ] Performance optimizations
