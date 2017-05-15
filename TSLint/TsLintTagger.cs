@@ -92,7 +92,7 @@ namespace TSLint
 
             var output = TsLint.Run(tsFilename);
 
-            if (output == null)
+            if (string.IsNullOrEmpty(output))
             {
                 return;
             }
