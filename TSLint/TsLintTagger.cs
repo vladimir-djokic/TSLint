@@ -127,13 +127,21 @@ namespace TSLint
 
                 var trackingSpan = this.view.TextSnapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive);
 
+                var type = PredefinedErrorTypeNames.Warning;
+
+                if (entry.RuleSeverity != null && entry.RuleSeverity == "ERROR")
+                {
+                    type = PredefinedErrorTypeNames.SyntaxError;
+                }
+
                 this.collectedTags.Add(
                     new TsLintTag(
                         trackingSpan,
-                        PredefinedErrorTypeNames.Warning,
+                        type,
                         $"[tslint] {entry.Failure} ({entry.RuleName})",
                         tsFilename,
-                        entry.StartPosition.Line
+                        entry.StartPosition.Line,
+                        entry.StartPosition.Character
                     )
                 );
             }

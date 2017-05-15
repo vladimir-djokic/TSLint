@@ -12,5 +12,6 @@
         public TsLintPosition EndPosition { get; set; }
         public string Failure { get; set; }
         public string RuleName { get; set; }
+        public string RuleSeverity { get; set; }
     }
 }

@@ -30,40 +30,40 @@ namespace TSLint
 
         internal static void RemoveAllForDocument(string name)
         {
-            var toRemove = new List<ErrorTask>();
-
-            foreach (ErrorTask task in ErrorListHelper.provider.Tasks)
+            for (var i = ErrorListHelper.provider.Tasks.Count - 1; i >= 0; i--)
             {
+                var task = ErrorListHelper.provider.Tasks[i];
+
                 if (task.Document == name)
                 {
-                    toRemove.Add(task);
+                    ErrorListHelper.provider.Tasks.RemoveAt(i);
                 }
-            }
-
-            foreach (var task in toRemove)
-            {
-                ErrorListHelper.provider.Tasks.Remove(task);
             }
         }
 
         internal static void Add(TsLintTag tag)
         {
-            var error = new ErrorTask();
-
-            error.ErrorCategory =
+            var error = new ErrorTask()
+            {
+                ErrorCategory =
                 tag.ErrorType ==
                     PredefinedErrorTypeNames.SyntaxError
                         ? TaskErrorCategory.Error
-                        : TaskErrorCategory.Warning;
+                        : TaskErrorCategory.Warning,
 
-            error.Document = tag.DocumentName;
-            error.Line = tag.Line;
-            error.Text = tag.ToolTipContent.ToString();
+                Document = tag.DocumentName,
+                Line = tag.Line,
+                Column = tag.Column,
+                Text = tag.ToolTipContent.ToString(),
+            };
 
             error.Navigate += (s, e) => {
-                var task = new Task();
-                task.Document = error.Document;
-                task.Line = error.Line + 1;
+                var task = new Task()
+                {
+                    Document = error.Document,
+                    Line = error.Line + 1,
+                    Column = error.Column + 1
+                };
 
                 ErrorListHelper.provider.Navigate(task, new Guid());
             };
