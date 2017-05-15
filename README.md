@@ -19,7 +19,7 @@ code in the editor is marked (underlined) based on the `JSON` output from `tslin
 This extension is not perfect and more work is required. Some of the work that should be done:
 
 - [ ] Make it work with local and global installations
-- [ ] Make is support both warnings and erros along with different markings in the editor
+- [x] Make is support both warnings and erros along with different markings in the editor
 - [x] Make it support `Error List` in Visual Studio (basic support)
 - [ ] Make it support automated fixes
 - [ ] Performance optimizations
