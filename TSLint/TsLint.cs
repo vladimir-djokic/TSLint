@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.VisualStudio.Threading;
+using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace TSLint
 {
@@ -17,7 +19,7 @@ namespace TSLint
             }
         }
 
-        public static string Run(string tsFilename)
+        public static async Task<string> Run(string tsFilename)
         {
             if (tsLintCmd == null)
             {
@@ -37,8 +39,8 @@ namespace TSLint
             var proc = Process.Start(procInfo);
             var reader = proc.StandardOutput;
 
-            proc.WaitForExit();
-            return reader.ReadToEnd();
+            await proc.WaitForExitAsync();
+            return await reader.ReadToEndAsync();
         }
     }
 }

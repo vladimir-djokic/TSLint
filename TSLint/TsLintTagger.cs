@@ -15,6 +15,7 @@ namespace TSLint
         private readonly ITextDocument document;
         private readonly ITextStructureNavigator textStructureNavigator;
 
+        private readonly TsLintQueue queue;
         private readonly IList<TsLintTag> collectedTags;
 
         internal TsLintTagger(
@@ -27,6 +28,7 @@ namespace TSLint
             this.view = textView;
             this.textStructureNavigator = textStructureNavigatorSelector.GetTextStructureNavigator(this.view.TextBuffer);
 
+            this.queue = new TsLintQueue(this.CollectTags);
             this.collectedTags = new List<TsLintTag>();
 
             var success =
@@ -40,8 +42,21 @@ namespace TSLint
                 this.document.FileActionOccurred += this.OnDocumentFileActionOccured;
                 this.view.Closed += OnViewClosed;
 
-                this.CollectTags(this.document.FilePath);
-                this.UpdateErrorsList();
+                this.queue.Enqueue(this.document.FilePath)
+                    .ContinueWith(t => this.UpdateErrorsList())
+                    .ContinueWith(
+                        t =>
+                            this.TagsChanged(
+                                this,
+                                new SnapshotSpanEventArgs(
+                                    new SnapshotSpan(
+                                        this.view.TextSnapshot,
+                                        0,
+                                        this.view.TextSnapshot.Length
+                                    )
+                                )
+                            )
+                    );
             }
         }
 
@@ -68,11 +83,11 @@ namespace TSLint
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-        private void OnDocumentFileActionOccured(object sender, TextDocumentFileActionEventArgs e)
+        private async void OnDocumentFileActionOccured(object sender, TextDocumentFileActionEventArgs e)
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
-                this.CollectTags(e.FilePath);
+                await this.queue.Enqueue(e.FilePath);
                 this.UpdateErrorsList();
 
                 this.TagsChanged(
@@ -95,11 +110,11 @@ namespace TSLint
             ErrorListHelper.Resume();
         }
 
-        private void CollectTags(string tsFilename)
+        private async System.Threading.Tasks.Task CollectTags(string tsFilename)
         {
             this.collectedTags.Clear();
 
-            var output = TsLint.Run(tsFilename);
+            var output = await TsLint.Run(tsFilename);
 
             if (string.IsNullOrEmpty(output))
             {
