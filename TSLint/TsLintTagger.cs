@@ -38,6 +38,8 @@ namespace TSLint
             if (success)
             {
                 this.document.FileActionOccurred += this.OnDocumentFileActionOccured;
+                this.view.Closed += OnViewClosed;
+
                 this.CollectTags(this.document.FilePath);
                 this.UpdateErrorsList();
             }
@@ -84,6 +86,13 @@ namespace TSLint
                     )
                 );
             }
+        }
+
+        private void OnViewClosed(object sender, EventArgs e)
+        {
+            ErrorListHelper.Suspend();
+            ErrorListHelper.RemoveAllForDocument(this.document.FilePath);
+            ErrorListHelper.Resume();
         }
 
         private void CollectTags(string tsFilename)
