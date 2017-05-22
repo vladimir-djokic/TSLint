@@ -16,7 +16,7 @@ namespace TSLint
         private readonly ITextStructureNavigator textStructureNavigator;
 
         private readonly TsLintQueue queue;
-        private readonly IList<TsLintTag> collectedTags;
+        private readonly List<TsLintTag> collectedTags;
 
         internal TsLintTagger(
             ITextDocumentFactoryService textDocumentFactory,
@@ -43,20 +43,8 @@ namespace TSLint
                 this.view.Closed += OnViewClosed;
 
                 this.queue.Enqueue(this.document.FilePath)
-                    .ContinueWith(t => this.UpdateErrorsList())
-                    .ContinueWith(
-                        t =>
-                            this.TagsChanged(
-                                this,
-                                new SnapshotSpanEventArgs(
-                                    new SnapshotSpan(
-                                        this.view.TextSnapshot,
-                                        0,
-                                        this.view.TextSnapshot.Length
-                                    )
-                                )
-                            )
-                    );
+                    .ContinueWith(_ => this.UpdateErrorsList())
+                    .ContinueWith(_ => this.TriggerTagsChanged());
             }
         }
 
@@ -90,16 +78,7 @@ namespace TSLint
                 await this.queue.Enqueue(e.FilePath);
                 this.UpdateErrorsList();
 
-                this.TagsChanged(
-                    this,
-                    new SnapshotSpanEventArgs(
-                        new SnapshotSpan(
-                            this.view.TextSnapshot,
-                            0,
-                            this.view.TextSnapshot.Length
-                        )
-                    )
-                );
+                this.TriggerTagsChanged();
             }
         }
 
@@ -135,6 +114,8 @@ namespace TSLint
 
                 if (start == end)
                 {
+                    // Handle some special cases. If the number of special casess increases,
+                    // I should refactor this.
                     if (entry.RuleName == "semicolon")
                     {
                         // "Move" left by one character so that we can pin-point the text with the missing semicolon
@@ -181,6 +162,20 @@ namespace TSLint
             {
                 ErrorListHelper.Add(tag);
             }
+        }
+
+        private void TriggerTagsChanged()
+        {
+            this.TagsChanged(
+                this,
+                new SnapshotSpanEventArgs(
+                    new SnapshotSpan(
+                        this.view.TextSnapshot,
+                        0,
+                        this.view.TextSnapshot.Length
+                    )
+                )
+            );
         }
     }
 }

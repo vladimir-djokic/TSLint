@@ -13,10 +13,12 @@ namespace TSLint
     internal class TsLintTagProvider : IViewTaggerProvider
     {
         [Import]
-        internal ITextDocumentFactoryService TextDocumentFactoryService { get; set; }
+        internal ITextDocumentFactoryService TextDocumentFactoryService
+        { get; set; }
 
         [Import]
-        internal ITextStructureNavigatorSelectorService TextStructureNavigatorSelectorService { get; set; }
+        internal ITextStructureNavigatorSelectorService TextStructureNavigatorSelectorService
+        { get; set; }
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {

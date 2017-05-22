@@ -7,7 +7,7 @@ namespace TSLint
 {
     internal class TsLint
     {
-        private static string tsLintCmd;
+        private static string tsLintCmdPath;
 
         public static void Init(string solutionDir)
         {
@@ -15,20 +15,20 @@ namespace TSLint
 
             if (File.Exists(cmd))
             {
-                tsLintCmd = cmd;
+                tsLintCmdPath = cmd;
             }
         }
 
         public static async Task<string> Run(string tsFilename)
         {
-            if (tsLintCmd == null)
+            if (tsLintCmdPath == null)
             {
                 return null;
             }
 
             var procInfo = new ProcessStartInfo()
             {
-                FileName = tsLintCmd,
+                FileName = tsLintCmdPath,
                 Arguments = $"-t JSON {tsFilename}",
                 RedirectStandardOutput = true,
                 WindowStyle = ProcessWindowStyle.Hidden,

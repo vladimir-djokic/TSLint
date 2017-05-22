@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="TSLint.Vladimir Đokić.b80a797c-55f5-493a-ab77-78343aca94ca" Version="1.0" Language="en-US" Publisher="Vladimir Đokić" />
+        <Identity Id="TSLint.Vladimir Đokić.b80a797c-55f5-493a-ab77-78343aca94ca" Version="0.1" Language="en-US" Publisher="Vladimir Đokić" />
         <DisplayName>TSLint</DisplayName>
-        <Description>Empty VSIX Project.</Description>
+        <Description xml:space="preserve">TypeScript linter (using TSLint) for Visual Studio 2017.</Description>
+        <MoreInfo>https://github.com/vladeck/TSLint</MoreInfo>
+        <Icon>Resources\VSPackage.ico</Icon>
+        <PreviewImage>Resources\preview.png</PreviewImage>
+        <Tags>TypeScript Linter TSLint</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0]" />

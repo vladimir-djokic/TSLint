@@ -22,13 +22,22 @@ namespace TSLint
             this.Column = column;
         }
 
-        public string ErrorType { get; private set; }
-        public object ToolTipContent { get; private set; }
+        public string ErrorType
+        { get; private set; }
 
-        public string DocumentName { get; private set; }
-        public int Line { get; private set; }
-        public int Column { get; private set; }
+        public object ToolTipContent
+        { get; private set; }
 
-        public ITrackingSpan TrackingSpan { get; private set; }
+        public string DocumentName
+        { get; private set; }
+
+        public int Line
+        { get; private set; }
+
+        public int Column
+        { get; private set; }
+
+        public ITrackingSpan TrackingSpan
+        { get; private set; }
     }
 }
