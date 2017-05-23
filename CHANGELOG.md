@@ -4,7 +4,7 @@
 
 **2017-05-23**
 
-- Support local installation of `tslint` relative to the opened document.
+- Support local installation of `tslint` relative to the opened document's project.
 
 ## 0.1
 
