@@ -1,5 +1,4 @@
-﻿using EnvDTE;
-using EnvDTE80;
+﻿using EnvDTE80;
 using Microsoft.VisualStudio.Threading;
 using System.Diagnostics;
 using System.IO;
@@ -18,13 +17,20 @@ namespace TSLint
 
         public static async Task<string> Run(string tsFilename)
         {
+            // First, try to find out if tslint is local to the file's project.
             var item = dte2.Solution.FindProjectItem(tsFilename);
             var project = item.ContainingProject;
             var tsLintCmdPath = $"{Path.GetDirectoryName(project.FullName)}\\node_modules\\.bin\\tslint.cmd";
 
             if (!File.Exists(tsLintCmdPath))
             {
-                return null;
+                // Now, try to find out if tslint is local to the solution
+                tsLintCmdPath = $"{Path.GetDirectoryName(dte2.Solution.FullName)}\\node_modules\\.bin\\tslint.cmd";
+
+                if (!File.Exists(tsLintCmdPath))
+                {
+                    return null;
+                }
             }
 
             var procInfo = new ProcessStartInfo()

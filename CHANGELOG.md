@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+**2017-05-23**
+
+- Support local installation of `tslint` relative to the opened document's solution (project's `tslint` takes precedence).
+
 ## 0.2
 
 **2017-05-23**
