@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.Threading;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Threading;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,21 +9,20 @@ namespace TSLint
 {
     internal class TsLint
     {
-        private static string tsLintCmdPath;
+        private static DTE2 dte2;
 
-        public static void Init(string solutionDir)
+        public static void Init(DTE2 dte2)
         {
-            var cmd = Path.Combine(solutionDir, "node_modules\\.bin\\tslint.cmd");
-
-            if (File.Exists(cmd))
-            {
-                tsLintCmdPath = cmd;
-            }
+            TsLint.dte2 = dte2;
         }
 
         public static async Task<string> Run(string tsFilename)
         {
-            if (tsLintCmdPath == null)
+            var item = dte2.Solution.FindProjectItem(tsFilename);
+            var project = item.ContainingProject;
+            var tsLintCmdPath = $"{Path.GetDirectoryName(project.FullName)}\\node_modules\\.bin\\tslint.cmd";
+
+            if (!File.Exists(tsLintCmdPath))
             {
                 return null;
             }
@@ -36,7 +37,7 @@ namespace TSLint
                 UseShellExecute = false
             };
 
-            var proc = Process.Start(procInfo);
+            var proc = System.Diagnostics.Process.Start(procInfo);
             var reader = proc.StandardOutput;
 
             await proc.WaitForExitAsync();

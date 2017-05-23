@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
 using System.IO;
+using EnvDTE80;
 
 namespace TSLint
 {
@@ -27,14 +28,16 @@ namespace TSLint
         protected override void Initialize()
         {
             // Get directory of the currently opened solution.
-            var dte = (DTE)GetService(typeof(DTE));
-            var solutionDir = Path.GetDirectoryName(dte.Solution.FullName);
+            var dte2 = (DTE2)Package.GetGlobalService(typeof(SDTE));
+            
+            if (dte2 != null)
+            {
+                // Init linter.
+                TsLint.Init(dte2);
 
-            // Init linter.
-            TsLint.Init(solutionDir);
-
-            // Init Error List helper.
-            ErrorListHelper.Init(this);
+                // Init Error List helper.
+                ErrorListHelper.Init(this);
+            }
 
             base.Initialize();
         }
