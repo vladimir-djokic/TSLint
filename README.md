@@ -1,6 +1,6 @@
 # What is it?
 
-Visual Studio 2017 extension for liting **Typescript** files using `tslint`.
+Visual Studio 2017 extension for linting **Typescript** files using `tslint`.
 
 ![TSLint](TSLint/Resources/preview.png)
 
@@ -12,7 +12,7 @@ gives additional info in the form of a tooltip and warnings and errors are liste
 
 # Roadmap
 
-- [x] Support both warnings and erros
+- [x] Support both warnings and errors
 - [x] Support the **Error List**
 - [ ] Support automated fixes
 - [ ] Optimizations
