@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+
+**2017-05-25**
+
+- Cache project/solution and tslint.cmd path pairs when linting (small performance improvement).
+
 ## 0.2.1
 
 **2017-05-23**
