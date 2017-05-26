@@ -6,26 +6,26 @@ namespace TSLint
 {
     internal class TsLintQueue
     {
-        private readonly SemaphoreSlim semaphore;
-        private readonly Func<string, Task> collectTags;
+        private readonly SemaphoreSlim _semaphore;
+        private readonly Func<string, Task> _collectTags;
 
         public TsLintQueue(Func<string, Task> collectTags)
         {
-            this.semaphore = new SemaphoreSlim(1);
-            this.collectTags = collectTags;
+            this._semaphore = new SemaphoreSlim(1);
+            this._collectTags = collectTags;
         }
 
         internal async Task Enqueue(string tsFilename)
         {
-            await this.semaphore.WaitAsync();
+            await this._semaphore.WaitAsync();
 
             try
             {
-                await this.collectTags(tsFilename);
+                await this._collectTags(tsFilename);
             }
             finally
             {
-                this.semaphore.Release();
+                this._semaphore.Release();
             }
         }
     }

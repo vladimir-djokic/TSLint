@@ -11,12 +11,12 @@ namespace TSLint
 {
     internal class TsLintTagger : ITagger<IErrorTag>
     {
-        private readonly ITextView view;
-        private readonly ITextDocument document;
-        private readonly ITextStructureNavigator textStructureNavigator;
+        private readonly ITextView _view;
+        private readonly ITextDocument _document;
+        private readonly ITextStructureNavigator _textStructureNavigator;
 
-        private readonly TsLintQueue queue;
-        private readonly List<TsLintTag> collectedTags;
+        private readonly TsLintQueue _queue;
+        private readonly List<TsLintTag> _collectedTags;
 
         internal TsLintTagger(
             ITextDocumentFactoryService textDocumentFactory,
@@ -25,46 +25,54 @@ namespace TSLint
             ITextBuffer buffer
         )
         {
-            this.view = textView;
-            this.textStructureNavigator = textStructureNavigatorSelector.GetTextStructureNavigator(this.view.TextBuffer);
+            this._view = textView;
 
-            this.queue = new TsLintQueue(this.CollectTags);
-            this.collectedTags = new List<TsLintTag>();
+            this._textStructureNavigator =
+                textStructureNavigatorSelector.GetTextStructureNavigator(
+                    this._view.TextBuffer
+                );
+
+            this._queue = new TsLintQueue(this.CollectTags);
+            this._collectedTags = new List<TsLintTag>();
 
             var success =
                 textDocumentFactory.TryGetTextDocument(
                     buffer,
-                    out this.document
+                    out this._document
                 );
 
-            if (success)
-            {
-                this.document.FileActionOccurred += this.OnDocumentFileActionOccured;
-                this.view.Closed += OnViewClosed;
+            if (!success)
+                return;
 
-                this.queue.Enqueue(this.document.FilePath)
-                    .ContinueWith(_ => this.UpdateErrorsList())
-                    .ContinueWith(_ => this.TriggerTagsChanged());
-            }
+            this._document.FileActionOccurred += this.OnDocumentFileActionOccured;
+            this._view.Closed += OnViewClosed;
+
+            this._queue.Enqueue(this._document.FilePath)
+                .ContinueWith(_ => this.UpdateErrorsList())
+                .ContinueWith(_ => this.TriggerTagsChanged());
         }
 
         public IEnumerable<ITagSpan<IErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (this.collectedTags.Count > 0)
-            {
-                foreach (var span in spans)
-                {
-                    foreach (var tag in this.collectedTags)
-                    {
-                        var snapshot = span.Snapshot;
-                        var trackingSpanSpan = tag.TrackingSpan.GetSpan(snapshot);
+            if (this._collectedTags.Count <= 0)
+                yield break;
 
-                        if (trackingSpanSpan.IntersectsWith(span))
-                        {
-                            var tagSpan = new TagSpan<IErrorTag>(new SnapshotSpan(snapshot, trackingSpanSpan), tag);
-                            yield return tagSpan;
-                        }
-                    }
+            foreach (var span in spans)
+            {
+                foreach (var tag in this._collectedTags)
+                {
+                    var snapshot = span.Snapshot;
+                    var trackingSpanSpan = tag.TrackingSpan.GetSpan(snapshot);
+
+                    if (!trackingSpanSpan.IntersectsWith(span))
+                        continue;
+
+                    var tagSpan = new TagSpan<IErrorTag>(
+                        new SnapshotSpan(snapshot, trackingSpanSpan),
+                        tag
+                    );
+
+                    yield return tagSpan;
                 }
             }
         }
@@ -73,25 +81,25 @@ namespace TSLint
 
         private async void OnDocumentFileActionOccured(object sender, TextDocumentFileActionEventArgs e)
         {
-            if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
-            {
-                await this.queue.Enqueue(e.FilePath);
-                this.UpdateErrorsList();
+            if (e.FileActionType != FileActionTypes.ContentSavedToDisk)
+                return;
 
-                this.TriggerTagsChanged();
-            }
+            await this._queue.Enqueue(e.FilePath);
+            this.UpdateErrorsList();
+
+            this.TriggerTagsChanged();
         }
 
         private void OnViewClosed(object sender, EventArgs e)
         {
             ErrorListHelper.Suspend();
-            ErrorListHelper.RemoveAllForDocument(this.document.FilePath);
+            ErrorListHelper.RemoveAllForDocument(this._document.FilePath);
             ErrorListHelper.Resume();
         }
 
         private async System.Threading.Tasks.Task CollectTags(string tsFilename)
         {
-            this.collectedTags.Clear();
+            this._collectedTags.Clear();
 
             var output = await TsLint.Run(tsFilename);
 
@@ -105,7 +113,7 @@ namespace TSLint
 
             foreach (var entry in result)
             {
-                var line = this.document.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(entry.EndPosition.Line);
+                var line = this._document.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(entry.EndPosition.Line);
 
                 var start = entry.StartPosition.Character;
                 var end = entry.EndPosition.Character;
@@ -114,7 +122,7 @@ namespace TSLint
 
                 if (start == end)
                 {
-                    // Handle some special cases. If the number of special casess increases,
+                    // Handle some special cases. If the number of special cases increases,
                     // I should refactor this.
                     if (entry.RuleName == "semicolon")
                     {
@@ -122,15 +130,22 @@ namespace TSLint
                         start -= 1;
                     }
 
-                    var extent = this.textStructureNavigator.GetExtentOfWord(line.Start + start);
+                    var extent = this._textStructureNavigator.GetExtentOfWord(line.Start + start);
                     span = extent.Span;
                 }
                 else
                 {
-                    span = new SnapshotSpan(this.view.TextSnapshot, Span.FromBounds(line.Start + start, line.Start + end));
+                    span = new SnapshotSpan(
+                        this._view.TextSnapshot,
+                        Span.FromBounds(line.Start + start, line.Start + end)
+                    );
                 }
 
-                var trackingSpan = this.view.TextSnapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive);
+                var trackingSpan =
+                    this._view.TextSnapshot.CreateTrackingSpan(
+                        span,
+                        SpanTrackingMode.EdgeInclusive
+                    );
 
                 var type = PredefinedErrorTypeNames.Warning;
 
@@ -139,7 +154,7 @@ namespace TSLint
                     type = PredefinedErrorTypeNames.SyntaxError;
                 }
 
-                this.collectedTags.Add(
+                this._collectedTags.Add(
                     new TsLintTag(
                         trackingSpan,
                         type,
@@ -155,10 +170,10 @@ namespace TSLint
         private void UpdateErrorsList()
         {
             ErrorListHelper.Suspend();
-            ErrorListHelper.RemoveAllForDocument(this.document.FilePath);
+            ErrorListHelper.RemoveAllForDocument(this._document.FilePath);
             ErrorListHelper.Resume();
 
-            foreach (var tag in this.collectedTags)
+            foreach (var tag in this._collectedTags)
             {
                 ErrorListHelper.Add(tag);
             }
@@ -166,13 +181,13 @@ namespace TSLint
 
         private void TriggerTagsChanged()
         {
-            this.TagsChanged(
+            this.TagsChanged?.Invoke(
                 this,
                 new SnapshotSpanEventArgs(
                     new SnapshotSpan(
-                        this.view.TextSnapshot,
+                        this._view.TextSnapshot,
                         0,
-                        this.view.TextSnapshot.Length
+                        this._view.TextSnapshot.Length
                     )
                 )
             );

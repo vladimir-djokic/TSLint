@@ -1,42 +1,43 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Adornments;
-using System.Collections.Generic;
 
 namespace TSLint
 {
     internal static class ErrorListHelper
     {
-        private static ErrorListProvider provider;
+        private static ErrorListProvider _provider;
 
         internal static void Init(IServiceProvider serviceProvider)
         {
-            ErrorListHelper.provider = new ErrorListProvider(serviceProvider);
-            provider.ProviderName = "TSLint";
-            provider.ProviderGuid = new Guid("901887BA-2855-47A8-929D-AAD7FB6E8709");
-            provider.Show();
+            ErrorListHelper._provider = new ErrorListProvider(serviceProvider)
+            {
+                ProviderName = "TSLint",
+                ProviderGuid = new Guid("901887BA-2855-47A8-929D-AAD7FB6E8709")
+            };
+
+            ErrorListHelper._provider.Show();
         }
 
         internal static void Suspend()
         {
-            ErrorListHelper.provider.SuspendRefresh();
+            ErrorListHelper._provider.SuspendRefresh();
         }
 
         internal static void Resume()
         {
-            ErrorListHelper.provider.ResumeRefresh();
+            ErrorListHelper._provider.ResumeRefresh();
         }
 
         internal static void RemoveAllForDocument(string name)
         {
-            for (var i = ErrorListHelper.provider.Tasks.Count - 1; i >= 0; i--)
+            for (var i = ErrorListHelper._provider.Tasks.Count - 1; i >= 0; i--)
             {
-                var task = ErrorListHelper.provider.Tasks[i];
+                var task = ErrorListHelper._provider.Tasks[i];
 
                 if (task.Document == name)
                 {
-                    ErrorListHelper.provider.Tasks.RemoveAt(i);
+                    ErrorListHelper._provider.Tasks.RemoveAt(i);
                 }
             }
         }
@@ -65,10 +66,10 @@ namespace TSLint
                     Column = error.Column + 1
                 };
 
-                ErrorListHelper.provider.Navigate(task, new Guid());
+                ErrorListHelper._provider.Navigate(task, new Guid());
             };
 
-            ErrorListHelper.provider.Tasks.Add(error);
+            ErrorListHelper._provider.Tasks.Add(error);
         }
     }
 }

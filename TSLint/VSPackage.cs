@@ -1,10 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
-using System.IO;
 using EnvDTE80;
 
 namespace TSLint

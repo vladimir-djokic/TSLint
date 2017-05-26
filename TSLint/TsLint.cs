@@ -10,91 +10,91 @@ namespace TSLint
 {
     internal class TsLint
     {
-        private static DTE2 dte2;
+        private static DTE2 _dte2;
 
-        private readonly static string tslintCmdSubpath =
+        private const string TslintCmdSubpath =
             "\\node_modules\\.bin\\tslint.cmd";
 
-        private readonly static KeyValuePair<string, string> defKeyValuePair =
+        private static readonly KeyValuePair<string, string> DefKeyValuePair =
             default(KeyValuePair<string, string>);
 
         // Key: project/solution path, value: tslint.cmd path.
-        private readonly static Dictionary<string, string> cache =
+        private static readonly Dictionary<string, string> Cache =
             new Dictionary<string, string>();
 
         public static void Init(DTE2 dte2)
         {
-            TsLint.dte2 = dte2;
+            TsLint._dte2 = dte2;
         }
 
         public static async Task<string> Run(string tsFilename)
         {
-            var existingPath = TsLint.cache.SingleOrDefault(
+            var existingPath = TsLint.Cache.SingleOrDefault(
                 p => tsFilename.Contains(p.Key)
             );
 
-            var potentialPath = TsLint.defKeyValuePair;
-
-            if (existingPath.Equals(TsLint.defKeyValuePair))
+            if (existingPath.Equals(TsLint.DefKeyValuePair))
             {
                 // First, check if the project for this file has local installation of tslint.
-                potentialPath = TsLint.TryGetProjectTsLint(tsFilename);
+                var potentialPath = TsLint.TryGetProjectTsLint(tsFilename);
 
-                if (potentialPath.Equals(TsLint.defKeyValuePair))
+                if (potentialPath.Equals(TsLint.DefKeyValuePair))
                 {
                     // Now, check if the solution has local installation of tslint.
                     potentialPath = TsLint.TryGetSolutionTsLint(tsFilename);
                 }
 
-                if (!potentialPath.Equals(TsLint.defKeyValuePair))
+                if (!potentialPath.Equals(TsLint.DefKeyValuePair))
                 {
                     existingPath = potentialPath;
-                    TsLint.cache.Add(existingPath.Key, existingPath.Value);
+                    TsLint.Cache.Add(existingPath.Key, existingPath.Value);
                 }
             }
 
-            if (!existingPath.Equals(TsLint.defKeyValuePair))
+            if (existingPath.Equals(TsLint.DefKeyValuePair))
+                return null;
+
+            var procInfo = new ProcessStartInfo()
             {
-                var procInfo = new ProcessStartInfo()
-                {
-                    FileName = existingPath.Value,
-                    Arguments = $"-t JSON {tsFilename}",
-                    RedirectStandardOutput = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
+                FileName = existingPath.Value,
+                Arguments = $"-t JSON {tsFilename}",
+                RedirectStandardOutput = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
 
-                var proc = Process.Start(procInfo);
-                var reader = proc.StandardOutput;
+            var proc = Process.Start(procInfo);
 
-                await proc.WaitForExitAsync();
-                return await reader.ReadToEndAsync();
-            }
+            if (proc == null)
+                return null;
 
-            return null;
+            var reader = proc.StandardOutput;
+
+            await proc.WaitForExitAsync();
+            return await reader.ReadToEndAsync();
         }
 
         private static KeyValuePair<string, string> TryGetProjectTsLint(string tsFilename)
         {
-            var item = dte2.Solution.FindProjectItem(tsFilename);
+            var item = _dte2.Solution.FindProjectItem(tsFilename);
             var project = item.ContainingProject;
             var projectPath = Path.GetDirectoryName(project.FullName);
-            var tsLintCmdPath = $"{projectPath}{tslintCmdSubpath}";
+            var tsLintCmdPath = $"{projectPath}{TslintCmdSubpath}";
 
             return File.Exists(tsLintCmdPath)
                 ? new KeyValuePair<string, string>(projectPath, tsLintCmdPath)
-                : TsLint.defKeyValuePair;
+                : TsLint.DefKeyValuePair;
         }
 
         private static KeyValuePair<string, string> TryGetSolutionTsLint(string tsFilename)
         {
-            var solutionPath = Path.GetDirectoryName(dte2.Solution.FullName);
-            var tsLintCmdPath = $"{solutionPath}{tslintCmdSubpath}";
+            var solutionPath = Path.GetDirectoryName(_dte2.Solution.FullName);
+            var tsLintCmdPath = $"{solutionPath}{TslintCmdSubpath}";
 
             return File.Exists(tsLintCmdPath)
                 ? new KeyValuePair<string, string>(solutionPath, tsLintCmdPath)
-                : TsLint.defKeyValuePair;
+                : TsLint.DefKeyValuePair;
         }
     }
 }
