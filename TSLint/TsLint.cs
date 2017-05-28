@@ -41,7 +41,7 @@ namespace TSLint
                 if (potentialPath.Equals(TsLint.DefKeyValuePair))
                 {
                     // Now, check if the solution has local installation of tslint.
-                    potentialPath = TsLint.TryGetSolutionTsLint(tsFilename);
+                    potentialPath = TsLint.TryGetSolutionTsLint();
                 }
 
                 if (!potentialPath.Equals(TsLint.DefKeyValuePair))
@@ -87,7 +87,7 @@ namespace TSLint
                 : TsLint.DefKeyValuePair;
         }
 
-        private static KeyValuePair<string, string> TryGetSolutionTsLint(string tsFilename)
+        private static KeyValuePair<string, string> TryGetSolutionTsLint()
         {
             var solutionPath = Path.GetDirectoryName(_dte2.Solution.FullName);
             var tsLintCmdPath = $"{solutionPath}{TslintCmdSubpath}";
