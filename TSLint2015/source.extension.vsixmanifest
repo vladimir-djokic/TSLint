@@ -1,25 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="TSLint.vladeck.F403D5A3-A744-41D9-9D5D-290D556C0F94" Version="0.3" Language="en-US" Publisher="vladeck" />
-        <DisplayName>TSLint</DisplayName>
-        <Description xml:space="preserve">TypeScript linter (using TSLint) for Visual Studio 2017.</Description>
+        <Identity Id="TSLint2015.vladeck.59fb7d6b-4e76-4c08-9e1d-343c93654221" Version="0.3" Language="en-US" Publisher="vladeck" />
+        <DisplayName>TSLint2015</DisplayName>
+        <Description xml:space="preserve">TypeScript linter (using TSLint) for Visual Studio 2015.</Description>
         <MoreInfo>https://github.com/vladeck/TSLint</MoreInfo>
         <ReleaseNotes>https://github.com/vladeck/TSLint/blob/master/CHANGELOG.md</ReleaseNotes>
-        <Icon>Resources\VSPackage.ico</Icon>
-        <PreviewImage>Resources\preview.png</PreviewImage>
+        <Icon>Resources\preview.png</Icon>
+        <PreviewImage>Resources\VSPackage.ico</PreviewImage>
         <Tags>TypeScript, TSLint</Tags>
     </Metadata>
     <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0]" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-        <Dependency Id="Microsoft.VisualStudio.MPF.15.0" DisplayName="Visual Studio MPF 15.0" d:Source="Installed" Version="[15.0]" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
     </Dependencies>
-    <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
-    </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />

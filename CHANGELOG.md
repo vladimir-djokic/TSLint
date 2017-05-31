@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3
+
+**2017-05-31**
+
+- Add support for Visual Studio 2015.
+
 ## 0.2.2
 
 **2017-05-25**
