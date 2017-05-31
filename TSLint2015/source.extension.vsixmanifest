@@ -6,8 +6,8 @@
         <Description xml:space="preserve">TypeScript linter (using TSLint) for Visual Studio 2015.</Description>
         <MoreInfo>https://github.com/vladeck/TSLint</MoreInfo>
         <ReleaseNotes>https://github.com/vladeck/TSLint/blob/master/CHANGELOG.md</ReleaseNotes>
-        <Icon>Resources\preview.png</Icon>
-        <PreviewImage>Resources\VSPackage.ico</PreviewImage>
+        <Icon>Resources\VSPackage.ico</Icon>
+        <PreviewImage>Resources\preview.png</PreviewImage>
         <Tags>TypeScript, TSLint</Tags>
     </Metadata>
     <Installation>
