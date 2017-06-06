@@ -3,9 +3,9 @@
 Visual Studio 2015/2017 extension for linting **Typescript** files using `tslint`.
 You can download extension on the marketplace:
 
-For Visual Studio 2015 [here](https://marketplace.visualstudio.com/items?itemName=vladeck.TSLint2015).
+For Visual Studio 2015, go [here](https://marketplace.visualstudio.com/items?itemName=vladeck.TSLint2015).
 
-For Visual Studio 2017 [here](https://marketplace.visualstudio.com/items?itemName=vladeck.TSLint).
+For Visual Studio 2017, go [here](https://marketplace.visualstudio.com/items?itemName=vladeck.TSLint).
 
 ![TSLint](TSLint/Resources/preview.png)
 
