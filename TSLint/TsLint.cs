@@ -57,6 +57,7 @@ namespace TSLint
             var procInfo = new ProcessStartInfo()
             {
                 FileName = existingPath.Value,
+                WorkingDirectory = existingPath.Key,
                 Arguments = $"-t JSON {tsFilename}",
                 RedirectStandardOutput = true,
                 WindowStyle = ProcessWindowStyle.Hidden,

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+
+**2017-06-07**
+
+- Resolve [#2 Support configuration files](https://github.com/vladeck/TSLint/issues/2) (better `extends` support).
+
 ## 0.3
 
 **2017-05-31**
