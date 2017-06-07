@@ -44,6 +44,12 @@ namespace TSLint
                     potentialPath = TsLint.TryGetSolutionTsLint();
                 }
 
+                if (potentialPath.Equals(TsLint.DefKeyValuePair))
+                {
+                    // No project, no solution, check if we can find local installation of tslint "manually".
+                    potentialPath = TsLint.TryGetTsLint(tsFilename);
+                }
+
                 if (!potentialPath.Equals(TsLint.DefKeyValuePair))
                 {
                     existingPath = potentialPath;
@@ -104,6 +110,27 @@ namespace TSLint
 
             return File.Exists(tsLintCmdPath)
                 ? new KeyValuePair<string, string>(solutionPath, tsLintCmdPath)
+                : TsLint.DefKeyValuePair;
+        }
+
+        private static KeyValuePair<string, string> TryGetTsLint(string tsFilename)
+        {
+            var dirPath = Path.GetDirectoryName(tsFilename);
+
+            if (dirPath == null)
+                return TsLint.DefKeyValuePair;
+
+            var dirInfo = new DirectoryInfo(dirPath);
+            var tsLintCmdPath = $"{dirInfo.FullName}{TslintCmdSubpath}";
+
+            while (!File.Exists(tsLintCmdPath) && dirInfo.Parent != null)
+            {
+                dirInfo = dirInfo.Parent;
+                tsLintCmdPath = $"{dirInfo.FullName}{TslintCmdSubpath}";
+            }
+
+            return File.Exists(tsLintCmdPath)
+                ? new KeyValuePair<string, string>(dirInfo.FullName, tsLintCmdPath)
                 : TsLint.DefKeyValuePair;
         }
     }
