@@ -80,6 +80,11 @@ namespace TSLint
         {
             var item = _dte2.Solution.FindProjectItem(tsFilename);
             var project = item.ContainingProject;
+
+            // If there is no project (file is dragged or explicitly opened).
+            if (string.IsNullOrEmpty(project.FullName))
+                return TsLint.DefKeyValuePair;
+
             var projectPath = Path.GetDirectoryName(project.FullName);
             var tsLintCmdPath = $"{projectPath}{TslintCmdSubpath}";
 
@@ -90,6 +95,10 @@ namespace TSLint
 
         private static KeyValuePair<string, string> TryGetSolutionTsLint()
         {
+            // If there is no solution (file is dragged or explicitly opened).
+            if (string.IsNullOrEmpty(_dte2.Solution.FullName))
+                return TsLint.DefKeyValuePair;
+
             var solutionPath = Path.GetDirectoryName(_dte2.Solution.FullName);
             var tsLintCmdPath = $"{solutionPath}{TslintCmdSubpath}";
 
