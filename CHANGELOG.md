@@ -4,7 +4,7 @@
 
 **2017-06-21**
 
-- Support for spaces in filenames (thank to [Holger Jeromin](https://github.com/HolgerJeromin) for [PR #4](https://github.com/vladeck/TSLint/pull/4))
+- Support for spaces in filenames (thanks to [Holger Jeromin](https://github.com/HolgerJeromin) for [PR #4](https://github.com/vladeck/TSLint/pull/4))
 
 ## Version 0.4
 
