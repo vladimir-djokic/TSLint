@@ -64,7 +64,7 @@ namespace TSLint
             {
                 FileName = existingPath.Value,
                 WorkingDirectory = existingPath.Key,
-                Arguments = $"-t JSON {tsFilename}",
+                Arguments = $"-t JSON \"{tsFilename}\"",
                 RedirectStandardOutput = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true,
