@@ -104,16 +104,19 @@ namespace TSLint
             var output = await TsLint.Run(tsFilename);
 
             if (string.IsNullOrEmpty(output))
-            {
                 return;
-            }
 
             var jArray = JArray.Parse(output);
             var result = jArray.ToObject<List<TsLintResult>>();
 
             foreach (var entry in result)
             {
-                var line = this._document.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(entry.EndPosition.Line);
+                // If the document has been closed
+                if (this._document.TextBuffer == null)
+                    continue;
+
+                var startLine = this._document.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(entry.StartPosition.Line);
+                var endLine = this._document.TextBuffer.CurrentSnapshot.GetLineFromLineNumber(entry.EndPosition.Line);
 
                 var start = entry.StartPosition.Character;
                 var end = entry.EndPosition.Character;
@@ -130,14 +133,14 @@ namespace TSLint
                         start -= 1;
                     }
 
-                    var extent = this._textStructureNavigator.GetExtentOfWord(line.Start + start);
+                    var extent = this._textStructureNavigator.GetExtentOfWord(endLine.Start + start);
                     span = extent.Span;
                 }
                 else
                 {
                     span = new SnapshotSpan(
                         this._view.TextSnapshot,
-                        Span.FromBounds(line.Start + start, line.Start + end)
+                        Span.FromBounds(startLine.Start + start, endLine.Start + end)
                     );
                 }
 
