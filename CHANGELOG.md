@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.4.2
+
+**2017-10-24**
+
+- Resolve [#7 Visual Studio 2017 Crashing](https://github.com/vladeck/TSLint/issues/7)
+- Resolve crashing when `tslint` errors are spanning multiple lines
+
 ## Version 0.4.1
 
 **2017-06-21**
