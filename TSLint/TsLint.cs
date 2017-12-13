@@ -76,10 +76,12 @@ namespace TSLint
             if (proc == null)
                 return null;
 
-            var reader = proc.StandardOutput;
+            var standardOutput = proc.StandardOutput;
+            var output = await standardOutput.ReadToEndAsync();
 
             await proc.WaitForExitAsync();
-            return await reader.ReadToEndAsync();
+
+            return output;
         }
 
         private static KeyValuePair<string, string> TryGetProjectTsLint(string tsFilename)
