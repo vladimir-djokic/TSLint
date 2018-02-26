@@ -30,10 +30,12 @@ namespace TSLint
             if (buffer != textView.TextBuffer)
                 return null;
 
+            ITextDocument document;
+
             var success =
                 this.TextDocumentFactoryService.TryGetTextDocument(
                     buffer,
-                    out ITextDocument document
+                    out document
                 );
 
             if (!success)
