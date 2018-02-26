@@ -19,7 +19,7 @@ namespace TSLint
         private readonly List<TsLintTag> _collectedTags;
 
         internal TsLintTagger(
-            ITextDocumentFactoryService textDocumentFactory,
+            ITextDocument document,
             ITextStructureNavigatorSelectorService textStructureNavigatorSelector,
             ITextView textView,
             ITextBuffer buffer
@@ -35,14 +35,7 @@ namespace TSLint
             this._queue = new TsLintQueue(this.CollectTags);
             this._collectedTags = new List<TsLintTag>();
 
-            var success =
-                textDocumentFactory.TryGetTextDocument(
-                    buffer,
-                    out this._document
-                );
-
-            if (!success)
-                return;
+            this._document = document;
 
             this._document.FileActionOccurred += this.OnDocumentFileActionOccured;
             this._view.Closed += OnViewClosed;

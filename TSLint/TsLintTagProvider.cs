@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
 
 namespace TSLint
 {
@@ -12,6 +14,8 @@ namespace TSLint
     [TagType(typeof(ErrorTag))]
     internal class TsLintTagProvider : IViewTaggerProvider
     {
+        private readonly string[] allowedExtensions = { ".ts", ".tsx" };
+
         [Import]
         internal ITextDocumentFactoryService TextDocumentFactoryService
         { get; set; }
@@ -26,10 +30,24 @@ namespace TSLint
             if (buffer != textView.TextBuffer)
                 return null;
 
+            var success =
+                this.TextDocumentFactoryService.TryGetTextDocument(
+                    buffer,
+                    out ITextDocument document
+                );
+
+            if (!success)
+                return null;
+
+            var ext = Path.GetExtension(document.FilePath);
+
+            if (!this.allowedExtensions.Any(e => e == ext))
+                return null;
+
             return textView.Properties.GetOrCreateSingletonProperty(
                 () =>
                     new TsLintTagger(
-                        this.TextDocumentFactoryService,
+                        document,
                         this.TextStructureNavigatorSelectorService,
                         textView,
                         buffer
