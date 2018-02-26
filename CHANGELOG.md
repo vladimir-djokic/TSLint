@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.4.4
+
+**2018-02-26**
+
+- Resolve [#14: Linting .js files as well as .ts](https://github.com/vladeck/TSLint/issues/14).
+
 ## Version 0.4.3
 
 **2017-12-13**
