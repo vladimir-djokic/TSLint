@@ -22,43 +22,33 @@ namespace TSLint
         internal static void Suspend()
         {
             if (ErrorListHelper._provider != null)
-            {
                 ErrorListHelper._provider.SuspendRefresh();
-            }
         }
 
         internal static void Resume()
         {
             if (ErrorListHelper._provider != null)
-            {
                 ErrorListHelper._provider.ResumeRefresh();
-            }
         }
 
         internal static void RemoveAllForDocument(string name)
         {
             if (ErrorListHelper._provider == null)
-            {
                 return;
-            }
 
             for (var i = ErrorListHelper._provider.Tasks.Count - 1; i >= 0; i--)
             {
                 var task = ErrorListHelper._provider.Tasks[i];
 
                 if (task.Document == name)
-                {
                     ErrorListHelper._provider.Tasks.RemoveAt(i);
-                }
             }
         }
 
         internal static void Add(TsLintTag tag)
         {
             if (ErrorListHelper._provider == null)
-            {
                 return;
-            }
 
             var error = new ErrorTask()
             {
