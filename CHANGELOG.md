@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.4.5
+
+**2018-03-21**
+
+- Merge [#15 Fixed NullReferenceException](https://github.com/vladeck/TSLint/pull/15) from Mads Kristensen (fixes numerous `NullReferenceException`(s) in `ErrorListHelper`)
+
 ## Version 0.4.4
 
 **2018-02-26**

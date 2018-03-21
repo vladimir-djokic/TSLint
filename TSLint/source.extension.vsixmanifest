@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="TSLint.vladeck.F403D5A3-A744-41D9-9D5D-290D556C0F94" Version="0.4.4" Language="en-US" Publisher="vladeck" />
+        <Identity Id="TSLint.vladeck.F403D5A3-A744-41D9-9D5D-290D556C0F94" Version="0.4.5" Language="en-US" Publisher="vladeck" />
         <DisplayName>TSLint</DisplayName>
         <Description xml:space="preserve">TypeScript linter (using TSLint) for Visual Studio 2017.</Description>
         <MoreInfo>https://github.com/vladeck/TSLint</MoreInfo>
