@@ -21,16 +21,27 @@ namespace TSLint
 
         internal static void Suspend()
         {
-            ErrorListHelper._provider.SuspendRefresh();
+            if (ErrorListHelper._provider != null)
+            {
+                ErrorListHelper._provider.SuspendRefresh();
+            }
         }
 
         internal static void Resume()
         {
-            ErrorListHelper._provider.ResumeRefresh();
+            if (ErrorListHelper._provider != null)
+            {
+                ErrorListHelper._provider.ResumeRefresh();
+            }
         }
 
         internal static void RemoveAllForDocument(string name)
         {
+            if (ErrorListHelper._provider == null)
+            {
+                return;
+            }
+
             for (var i = ErrorListHelper._provider.Tasks.Count - 1; i >= 0; i--)
             {
                 var task = ErrorListHelper._provider.Tasks[i];
@@ -44,6 +55,11 @@ namespace TSLint
 
         internal static void Add(TsLintTag tag)
         {
+            if (ErrorListHelper._provider == null)
+            {
+                return;
+            }
+
             var error = new ErrorTask()
             {
                 ErrorCategory =
@@ -58,7 +74,8 @@ namespace TSLint
                 Text = tag.ToolTipContent.ToString(),
             };
 
-            error.Navigate += (s, e) => {
+            error.Navigate += (s, e) =>
+            {
                 var task = new Task()
                 {
                     Document = error.Document,
