@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.5.0
+
+**2018-04-28**
+
+- If `tsc` and `tsconfig.json` are detected, `tslint` is run with `--project` flag providing type checking support.
+
 ## Version 0.4.5
 
 **2018-03-21**
