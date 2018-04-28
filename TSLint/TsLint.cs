@@ -12,8 +12,8 @@ namespace TSLint
     {
         private static DTE2 _dte2;
 
-        private const string TslintCmdSubpath =
-            "\\node_modules\\.bin\\tslint.cmd";
+        private const string CmdSubpath =
+            "\\node_modules\\.bin\\";
 
         private static readonly KeyValuePair<string, string> DefKeyValuePair =
             default(KeyValuePair<string, string>);
@@ -60,11 +60,19 @@ namespace TSLint
             if (existingPath.Equals(TsLint.DefKeyValuePair))
                 return null;
 
+            var tscCmdPath = $"{existingPath.Value}tsc.cmd";
+            var tscConfigPath = $"{existingPath.Key}\\tsconfig.json";
+
+            var useTsLintProjectFlag = false;
+
+            if (File.Exists(tscCmdPath) && File.Exists(tscConfigPath))
+                useTsLintProjectFlag = true;
+
             var procInfo = new ProcessStartInfo()
             {
-                FileName = existingPath.Value,
+                FileName = $"{existingPath.Value}tslint.cmd",
                 WorkingDirectory = existingPath.Key,
-                Arguments = $"-t JSON \"{tsFilename}\"",
+                Arguments = $"-t JSON {(useTsLintProjectFlag ? $"--project \"{tscConfigPath}\"" : "")} \"{tsFilename}\"",
                 RedirectStandardOutput = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true,
@@ -94,7 +102,7 @@ namespace TSLint
                 return TsLint.DefKeyValuePair;
 
             var projectPath = Path.GetDirectoryName(project.FullName);
-            var tsLintCmdPath = $"{projectPath}{TslintCmdSubpath}";
+            var tsLintCmdPath = $"{projectPath}{CmdSubpath}";
 
             return File.Exists(tsLintCmdPath)
                 ? new KeyValuePair<string, string>(projectPath, tsLintCmdPath)
@@ -108,10 +116,10 @@ namespace TSLint
                 return TsLint.DefKeyValuePair;
 
             var solutionPath = Path.GetDirectoryName(_dte2.Solution.FullName);
-            var tsLintCmdPath = $"{solutionPath}{TslintCmdSubpath}";
+            var tsLintCmdPath = $"{solutionPath}{CmdSubpath}tslint.cmd";
 
             return File.Exists(tsLintCmdPath)
-                ? new KeyValuePair<string, string>(solutionPath, tsLintCmdPath)
+                ? new KeyValuePair<string, string>(solutionPath, $"{solutionPath}{CmdSubpath}")
                 : TsLint.DefKeyValuePair;
         }
 
@@ -123,16 +131,16 @@ namespace TSLint
                 return TsLint.DefKeyValuePair;
 
             var dirInfo = new DirectoryInfo(dirPath);
-            var tsLintCmdPath = $"{dirInfo.FullName}{TslintCmdSubpath}";
+            var tsLintCmdPath = $"{dirInfo.FullName}{CmdSubpath}tslint.cmd";
 
             while (!File.Exists(tsLintCmdPath) && dirInfo.Parent != null)
             {
                 dirInfo = dirInfo.Parent;
-                tsLintCmdPath = $"{dirInfo.FullName}{TslintCmdSubpath}";
+                tsLintCmdPath = $"{dirInfo.FullName}{CmdSubpath}tslint.cmd";
             }
 
             return File.Exists(tsLintCmdPath)
-                ? new KeyValuePair<string, string>(dirInfo.FullName, tsLintCmdPath)
+                ? new KeyValuePair<string, string>(dirInfo.FullName, $"{dirInfo.FullName}{CmdSubpath}")
                 : TsLint.DefKeyValuePair;
         }
     }
