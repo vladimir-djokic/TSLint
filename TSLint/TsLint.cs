@@ -29,6 +29,9 @@ namespace TSLint
 
         public static async Task<string> Run(string tsFilename)
         {
+            if (TsLint._dte2 == null) // Fixes crashing for those that open project as folder.
+                return null;
+
             var existingPath = TsLint.Cache.SingleOrDefault(
                 p => tsFilename.Contains(p.Key)
             );
