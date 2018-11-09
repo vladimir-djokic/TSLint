@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.5.1
+
+**2018-11-10**
+
+- Resolve [#18 CLR_EXCEPTION_System.ArgumentOutOfRangeException_80131502_TSLint.dll](https://github.com/vladeck/TSLint/issues/18).
+- Fix crashing for those that open project as folder.
+
 ## Version 0.5.0
 
 **2018-04-28**
