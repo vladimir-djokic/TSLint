@@ -131,9 +131,16 @@ namespace TSLint
                 }
                 else
                 {
+                    var startBound = startLine.Start.Position + start;
+
+                    var endBound = endLine.Start.Position + end;
+
+                    if (this._view.TextSnapshot.Length < endBound)
+                        endBound = this._view.TextSnapshot.Length;
+
                     span = new SnapshotSpan(
                         this._view.TextSnapshot,
-                        Span.FromBounds(startLine.Start + start, endLine.Start + end)
+                        Span.FromBounds(startLine.Start + start, endBound)
                     );
                 }
 
